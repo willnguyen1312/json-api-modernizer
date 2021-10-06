@@ -1,10 +1,4 @@
-import {
-  modernizer,
-  groupBy,
-  keyBy,
-  extractEntities,
-  extractRelationships,
-} from '../src';
+import { modernizer, groupBy, keyBy } from '../src';
 
 const json = {
   links: {
