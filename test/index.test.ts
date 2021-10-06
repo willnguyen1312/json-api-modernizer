@@ -189,7 +189,7 @@ describe('modernizer function', () => {
   });
 });
 
-it.only('should also work', () => {
+it('should also work', () => {
   const groupByResult = groupBy(json.included, 'type');
 
   const actual = Object.keys(groupByResult).reduce((acc: any, cur) => {
