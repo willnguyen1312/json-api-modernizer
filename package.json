@@ -1,11 +1,11 @@
 {
+  "name": "json-api-modernizer",
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=10"
@@ -31,8 +31,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "json-api-modernizer",
-  "author": "Nam Nguyen",
+  "author": "Nam Nguyen <nam.nguyen.node@gmail.com>",
   "module": "dist/json-api-modernizer.esm.js",
   "size-limit": [
     {

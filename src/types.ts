@@ -5,12 +5,12 @@ type AnyKeyValueObject = {
 export type JsonApiResponse = {
   links?: JsonApiLinks;
   data?: JsonApiData | JsonApiData[];
-  included?: Array<JsonApiData>;
+  included?: JsonApiData[];
 };
 
-type JsonApiData = {
+export type JsonApiData = {
   type: string;
-  id?: string | number;
+  id: string | number;
   attributes?: AnyKeyValueObject;
   meta?: AnyKeyValueObject;
   links?: JsonApiLinks;
@@ -24,7 +24,7 @@ type JsonApiRelationshipData = {
 };
 
 type JsonApiRelation = {
-  data: JsonApiRelationshipData | Array<JsonApiRelationshipData>;
+  data: JsonApiRelationshipData | JsonApiRelationshipData[];
   links?: JsonApiLinks;
   meta?: AnyKeyValueObject;
 };
@@ -36,6 +36,6 @@ type JsonApiLinks = {
   related?: string;
 };
 
-type JsonApiRelationships = {
+export type JsonApiRelationships = {
   [relationName: string]: JsonApiRelation;
 };

@@ -1,9 +1,12 @@
 import merge from 'lodash.merge';
-import { JsonApiResponse } from './types';
+import { JsonApiResponse, JsonApiData, JsonApiRelationships } from './types';
 
-function extractRelationships(relationships: any) {
+export function extractRelationships(relationships: JsonApiRelationships) {
   const ret: any = {};
-  Object.keys(relationships).forEach(key => {
+
+  const relationshipsKeys = Object.keys(relationships);
+
+  for (const key of relationshipsKeys) {
     const relationship = relationships[key];
     ret[key] = {};
 
@@ -11,17 +14,17 @@ function extractRelationships(relationships: any) {
 
     if (data) {
       if (Array.isArray(data)) {
-        ret[key].data = data.map(({ id, type }) => ({
+        ret[key] = data.map(({ id, type }) => ({
           id,
           type,
         }));
       } else if (data) {
-        ret[key].data = {
+        ret[key] = {
           id: data.id,
           type: data.type,
         };
       } else {
-        ret[key].data = data;
+        ret[key] = data;
       }
     }
 
@@ -32,15 +35,16 @@ function extractRelationships(relationships: any) {
     if (meta) {
       ret[key].meta = meta;
     }
-  });
+  }
+
   return ret;
 }
 
-function extractEntities(json: any) {
+export function extractEntities(json: JsonApiData | JsonApiData[]) {
   const ret: any = {};
   const jsonArr = Array.isArray(json) ? json : [json];
 
-  jsonArr.forEach(elem => {
+  for (const elem of jsonArr) {
     const { type, id, links, relationships, meta, attributes } = elem;
 
     ret[type] = ret[type] || {};
@@ -54,21 +58,62 @@ function extractEntities(json: any) {
     if (links) {
       ret[type][id].links = {};
 
-      Object.keys(links).forEach(key => {
+      const linksKeys = Object.keys(links);
+
+      for (const key of linksKeys) {
+        // @ts-ignore
         ret[type][id].links[key] = links[key];
-      });
+      }
     }
 
     if (relationships) {
-      ret[type][id].relationships = extractRelationships(relationships);
+      ret[type][id] = merge(ret[type][id], extractRelationships(relationships));
     }
 
     if (meta) {
       ret[type][id].meta = meta;
     }
-  });
+  }
 
   return ret;
+}
+
+export function groupBy(arr: any[], getter: any): Record<string, any> {
+  return arr.reduce((acc, cur) => {
+    if (typeof getter === 'string') {
+      const item = cur[getter];
+
+      if (acc[item]) {
+        acc[item].push(cur);
+      } else {
+        acc[item] = [cur];
+      }
+      return acc;
+    }
+
+    const item = getter(cur);
+
+    if (acc[item]) {
+      acc[item].push(cur);
+    } else {
+      acc[item] = [cur];
+    }
+    return acc;
+  }, {});
+}
+
+export function keyBy(arr: any[], getter: any): Record<string, any> {
+  return arr.reduce((acc, cur) => {
+    if (typeof getter === 'string') {
+      const item = cur[getter];
+      acc[item] = cur;
+      return acc;
+    }
+
+    const item = getter(cur);
+    acc[item] = cur;
+    return acc;
+  }, {});
 }
 
 export function modernizer(json: JsonApiResponse) {
